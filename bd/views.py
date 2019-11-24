@@ -5,8 +5,8 @@ from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required, permission_required
 
-from .models import Cliente, TipoPapel, Gramaje, Papel, Formato_Libro, Modo, Contacto
-from .forms import ClienteForm, TipoPapelForm, GramajeForm, PapelForm, Formato_LibroForm, ModoForm, ContactoForm
+from .models import Cliente, TipoPapel, Gramaje, Papel, Formato_Libro, Modo, Contacto, Libro
+from .forms import ClienteForm, TipoPapelForm, GramajeForm, PapelForm, Formato_LibroForm, ModoForm, ContactoForm, LibroForm
 
 from bases.views import SinPrivilegios
 from django.http import HttpResponse
@@ -243,6 +243,39 @@ class ContactoEdit(SuccessMessageMixin, SinPrivilegios, generic.UpdateView):
         form.instance.um = self.request.user.id
         return super().form_valid(form)
 
+#LIBROS
+class LibroView(SinPrivilegios, generic.ListView):
+    permission_required = "bd.view_libro"
+    model = Libro
+    template_name = "bd/libro_list.html"
+    context_object_name = "obj"
+
+class LibroNew(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
+    model = Libro
+    template_name = "bd/libro_form.html"
+    context_object_name = "obj"
+    form_class = LibroForm
+    success_url = reverse_lazy("bd:libro_list")
+    success_message = "Libro Creado"
+    permission_required ="bd.3"
+
+    def form_valid(self, form):
+        form.instance.uc = self.request.user
+        return super().form_valid(form)
+
+class LibroEdit(SuccessMessageMixin, SinPrivilegios, generic.UpdateView):
+    model = Libro
+    template_name = "bd/libro_form.html"
+    context_object_name = "obj"
+    form_class = LibroForm
+    success_url = reverse_lazy("bd:libro_list")
+    success_message = "Libro Actualizado Correctamente"
+    permission_required = "bd.change_libro"
+
+    def form_valid(self, form):
+        form.instance.um = self.request.user.id
+        return super().form_valid(form)
+
 #INACTIVACIONES
 @login_required(login_url = '/login/')
 @permission_required('bd.change_cliente', login_url= 'bases:sin_privilegios')
@@ -440,4 +473,32 @@ def contacto_inactivar(request, id):
             contacto.save()
             contexto = {'obj':'OK'}
             return HttpResponse('Contacto Activado')
+    return render(request, template_name,contexto)
+
+@login_required(login_url = '/login/')
+@permission_required('bd.change_libro', login_url= 'bases:sin_privilegios')
+def libro_inactivar(request, id):
+    template_name = "bd/libro_inactivar.html"
+    contexto={}
+    libro = Libro.objects.filter(pk=id).first()
+    
+    if not libro:
+        return HttpResponse('Libro no existe ' + str(id))
+
+    if request.method == 'GET':
+        contexto = {'obj':libro}
+    
+    if request.method == 'POST':
+        if libro.estado:
+            libro.estado = False
+            libro.save()
+            contexto = {'obj':'OK'}
+            
+            return HttpResponse('Libro Inactivado')
+            
+        else:
+            libro.estado = True
+            libro.save()
+            contexto = {'obj':'OK'}
+            return HttpResponse('Libro Activado')
     return render(request, template_name,contexto)

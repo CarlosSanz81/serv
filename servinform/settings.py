@@ -75,28 +75,28 @@ WSGI_APPLICATION = 'servinform.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'db_servinform',
-#         'HOST': 'localhost',
-#         'USER': 'carlos',
-#         'PASSWORD': '1234',
-#         'PORT': '5432'
-#     }
-# }
-
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'db_servinform',
+        'HOST': 'localhost',
         'USER': 'carlos',
-        'PASSWORD': 'repro2106',
-        'HOST': 'localhost',  
-        'PORT': '3306',
+        'PASSWORD': '1234',
+        'PORT': '5432'
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'db_servinform',
+#         'USER': 'carlos',
+#         'PASSWORD': 'repro2106',
+#         'HOST': 'localhost',  
+#         'PORT': '3306',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

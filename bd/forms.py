@@ -1,6 +1,7 @@
 from django import forms
 
-from .models import Cliente, TipoPapel, Gramaje, Papel, Formato_Libro, Modo, Contacto
+from .models import Cliente, TipoPapel, Gramaje, Papel, Formato_Libro, \
+                    Modo, Contacto, Libro
 
 class ClienteForm(forms.ModelForm):
     class Meta:
@@ -125,3 +126,30 @@ class ContactoForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control',
             })
+
+class LibroForm(forms.ModelForm):
+    class Meta:
+        model = Libro
+        fields = ['id_cliente', 'isbn', 'titulo', 'cod_cliente', 'cod_interno',
+                    'dato_variable', 'id_formato_libro', 'solapas','id_papel',
+                    'paginas_bitono', 'paginas_color', 'paginas_bn','no_paginas',
+                    'id_modo', 'tamaño_lomo', 'tamaño_portada', 'tamaño_portada_sangre',
+                    'no_impresiones', 'coste', 'venta', 
+                    'observaciones']
+        # labels = {'nombre': 'Nombre',
+        #         'observaciones':'Observaciones',
+        #         'estado': 'Estado'}
+        widget = {'isbn':forms.TextInput}
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control',
+            })
+        self.fields['no_paginas'].widget.attrs['readonly'] = True
+        self.fields['tamaño_lomo'].widget.attrs['readonly'] = True
+        self.fields['tamaño_portada'].widget.attrs['readonly'] = True
+        self.fields['tamaño_portada_sangre'].widget.attrs['readonly'] = True
+        self.fields['no_impresiones'].widget.attrs['readonly'] = True
+        

@@ -6,7 +6,8 @@ from .views import ClienteView, ClienteNew, ClienteEdit, cliente_inactivar, \
                     PapelView, PapelNew, PapelEdit, papel_inactivar, \
                     Formato_LibroView, Formato_LibroNew, Formato_LibroEdit, formato_libro_inactivar, \
                     ModoView, ModoNew, ModoEdit, modo_inactivar, \
-                    ContactoView, ContactoNew, ContactoEdit, contacto_inactivar
+                    ContactoView, ContactoNew, ContactoEdit, contacto_inactivar, \
+                    LibroView, LibroNew, LibroEdit, libro_inactivar
 
 urlpatterns = [
     # CLIENTES
@@ -45,9 +46,17 @@ urlpatterns = [
     path('modos/edit/<int:pk>', ModoEdit.as_view(), name = 'modo_edit'),
     path('modos/incactivar/<int:id>', modo_inactivar, name = 'modo_inactivar'),
 
-    # MODO
+    # CONTACTOS
     path('contactos/', ContactoView.as_view(), name = 'contacto_list'),
     path('contactos/new', ContactoNew.as_view(), name = 'contacto_new'),
     path('contactos/edit/<int:pk>', ContactoEdit.as_view(), name = 'contacto_edit'),
     path('contactos/incactivar/<int:id>', contacto_inactivar, name = 'contacto_inactivar'),
+
+    # LIBROS
+    path('libros/', LibroView.as_view(), name = 'libro_list'),
+    path('libros/new', LibroNew.as_view(), name = 'libro_new'),
+    path('libros/edit/<int:pk>', LibroEdit.as_view(), name = 'libro_edit'),
+    path('libros/incactivar/<int:id>', libro_inactivar, name = 'libro_inactivar'),
+
+   
 ]
