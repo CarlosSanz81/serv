@@ -1,4 +1,6 @@
 from django import forms
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Cliente, TipoPapel, Gramaje, Papel, Formato_Libro, \
                     Modo, Contacto, Libro
@@ -133,7 +135,7 @@ class LibroForm(forms.ModelForm):
         fields = ['id_cliente', 'isbn', 'titulo', 'cod_cliente', 'cod_interno',
                     'dato_variable', 'id_formato_libro', 'solapas','id_papel',
                     'paginas_bitono', 'paginas_color', 'paginas_bn','no_paginas',
-                    'id_modo', 'tamaño_lomo', 'tamaño_portada', 'tamaño_portada_sangre',
+                     'tamaño_lomo', 'tamaño_portada', 'tamaño_portada_sangre',
                     'no_impresiones', 'coste', 'venta', 
                     'observaciones']
         # labels = {'nombre': 'Nombre',
@@ -152,4 +154,20 @@ class LibroForm(forms.ModelForm):
         self.fields['tamaño_portada'].widget.attrs['readonly'] = True
         self.fields['tamaño_portada_sangre'].widget.attrs['readonly'] = True
         self.fields['no_impresiones'].widget.attrs['readonly'] = True
+        
+        
+    
+    # def clean_isbn(self):
+
+    #     data = self.cleaned_data['isbn']
+            
+    #     #Check date is not in past. 
+    #     if data < 999999999999:
+    #         raise ValidationError(_('ISBN invalido, le faltan dígitos'))
+    #         #Check date is in range librarian allowed to change (+4 weeks).
+    #     if data > 9999999999999:
+    #         raise ValidationError(_('ISBN inválido, le sobran dígitos'))
+
+    #     # Remember to always return the cleaned data.
+    #     return data
         

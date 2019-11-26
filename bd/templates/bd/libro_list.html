@@ -12,6 +12,7 @@
         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
           <div class="dropdown-header">Acciones:</div>
           <a class="dropdown-item" onclick="return abrir_modal('{% url 'bd:libro_new' %}')" href="#"><i class="far fa-calendar-plus"></i> Nuevo</a>
+          <a class="dropdown-item" href="{% url 'export:import' %}"><i class="far fa-calendar-plus"></i> Importar</a>
         
         </div>
       </div>

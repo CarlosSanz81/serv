@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bases',
     'bd',
+    'export',
 ]
 
 MIDDLEWARE = [
@@ -143,3 +144,5 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True  

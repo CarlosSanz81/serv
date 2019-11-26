@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.exceptions import ValidationError
+
 
 from bases.models import ClaseModelo
 
@@ -149,9 +149,7 @@ class Contacto(ClaseModelo):
         verbose_name_plural = 'Contactos'
 
 class Libro(ClaseModelo):
-    isbn = models.BigIntegerField(
-        unique = True
-        )
+    isbn = models.CharField('ISBN',max_length=13)
     titulo = models.CharField(
         max_length = 200,
         blank = True
@@ -185,25 +183,20 @@ class Libro(ClaseModelo):
     def __str__(self):
         return '{}'.format(self.isbn)
 
-    
-
-    def clean_isbn(self):
-        data = self.cleaned_data['isbn']
-            
-        #Check date is not in past. 
-        if data < 999999999999:
-            raise ValidationError(_('ISBN invalido, le faltan dígitos'))
-            #Check date is in range librarian allowed to change (+4 weeks).
-        if data > 9999999999999:
-            raise ValidationError(_('ISBN inválido, le sobran dígitos'))
-
-        # Remember to always return the cleaned data.
-        return data
-
     def save(self):
+        if (self.paginas_bitono == 0 and self.paginas_color == 0 and self.paginas_bn > 0):
+            self.id_modo = Modo(1)
+        elif self.paginas_bn > 0:
+            self.id_modo = Modo(3)
+        else:
+            self.id_modo = Modo(2)
+        self.no_paginas = self.paginas_bitono + self.paginas_bn + self.paginas_color
+
         super(Libro, self).save()
     
     class Meta:
         verbose_name_plural = "Libros"
         verbose_name = "Libro"
+
+
 

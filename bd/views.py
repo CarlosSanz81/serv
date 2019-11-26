@@ -257,9 +257,10 @@ class LibroNew(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
     form_class = LibroForm
     success_url = reverse_lazy("bd:libro_list")
     success_message = "Libro Creado"
-    permission_required ="bd.3"
+    permission_required ="bd.create_libro"
 
     def form_valid(self, form):
+        
         form.instance.uc = self.request.user
         return super().form_valid(form)
 
@@ -502,3 +503,153 @@ def libro_inactivar(request, id):
             contexto = {'obj':'OK'}
             return HttpResponse('Libro Activado')
     return render(request, template_name,contexto)
+
+def libros_importacion(request):
+    import openpyxl
+    import psycopg2
+    import datetime
+
+    conn = psycopg2.connect("host='localhost' port='5432' dbname='db_servinform' user='carlos' password='1234'")
+    cur = conn.cursor()
+
+    doc = openpyxl.load_workbook('muestra2.xlsm')
+
+    hojas = doc.sheetnames
+
+    hoja = doc['Sheet1']
+    contador = 1
+    contador2 = 1
+
+    col_isbn = ''
+    col_paginas = ''
+    col_editorial = ''
+    col_datovariable = ''
+    col_titulo = ''
+    col_solapas = ''
+    col_codigo = ''
+    col_bitono = ''
+    col_color = ''
+    col_modo = ''
+    col_papel = ''
+    col_gramaje = ''
+    col_tamaño = ''
+    col_estado = ''
+
+    for fila in hoja.rows:
+    
+        if contador == 1:
+            if hoja.cell(row=contador, column = contador2).value == 'ISBN':
+                col_isbn = contador2
+            elif hoja.cell(row=contador, column = contador2).value == 'Páginas':
+                col_paginas = contador2
+            elif hoja.cell(row=contador, column = contador2).value == 'Editorial':
+                col_editorial = contador2
+            elif hoja.cell(row=contador, column = contador2).value == 'Dato variable':
+                col_datovariable = contador2
+            elif hoja.cell(row=contador, column = contador2).value == 'Título':
+                col_titulo = contador2
+            elif hoja.cell(row=contador, column = contador2).value == 'Solapas':
+                col_solapas = contador2
+            elif hoja.cell(row=contador, column = contador2).value == 'Código':
+                col_codigo = contador2
+            elif hoja.cell(row=contador, column = contador2).value == 'Páginas bitono':
+                col_bitono = contador2
+            elif hoja.cell(row=contador, column = contador2).value == 'Páginas color':
+                col_color = contador2
+            elif hoja.cell(row=contador, column = contador2).value == 'Tipo de papel':
+                col_papel = contador2
+            elif hoja.cell(row=contador, column = contador2).value == 'Gramaje':
+                col_gramaje = contador2
+            elif hoja.cell(row=contador, column = contador2).value == 'Formato del libro':
+                col_tamaño = contador2
+            elif hoja.cell(row=contador, column = contador2).value == 'Estado':
+                col_estado = contador2
+            
+            contador2 = contador2 + 1
+        
+
+
+    for fila in hoja.rows:
+        
+        if contador == 1:
+            pass
+        # elif contador >52:
+        #     break
+        
+        else:
+            try:
+                isbn = hoja.cell(row=contador, column = col_isbn).value
+                paginas = hoja.cell(row=contador, column = col_paginas).value
+                if paginas == '#N/A':
+                    paginas = 0
+                try:
+                    editorial = hoja.cell(row=contador, column = col_editorial).value 
+                except:
+                    editorial = 'EDITORIAL SINTESIS, S.A.'
+                datovariable = hoja.cell(row=contador, column = col_datovariable).value
+                if datovariable.upper() == "SI":
+                    datovariable = True
+                else:
+                    datovariable = False    
+
+                estado = hoja.cell(row=contador, column = col_estado).value
+                if (estado.upper() == 'OK' or estado == ''):
+                    estado = True
+                else:
+                    estado = False
+                cod_interno = hoja.cell(row=contador, column = col_codigo).value
+                titulo = hoja.cell(row=contador, column = col_titulo).value
+                bitono = hoja.cell(row=contador, column = col_bitono).value
+                if (bitono == '' or bitono == None):
+                    bitono = 0
+                
+                color = hoja.cell(row=contador, column = col_color).value
+                if (color == '' or color == None):
+                    color = 0
+
+                if (bitono == 0 and color == 0): 
+                    modo = "B/N"
+                elif (bitono != 0 and color != 0):
+                    insercion = int(bitono) + int(color)
+                    if insercion == paginas:
+                        modo = 'Color'
+                    else:
+                        modo = 'Hibrido'
+                    
+
+                papel = hoja.cell(row=contador, column = col_papel).value
+            
+                gramaje = hoja.cell(row=contador, column = col_gramaje).value
+                tamaño = hoja.cell(row=contador, column = col_tamaño).value
+                solapas = hoja.cell(row=contador, column = col_solapas).value
+                if solapas.upper() == 'NO':
+                    solapas = False
+                else:
+                    solapas = True
+                contador_impresion = 0
+                fc = datetime.datetime.now()
+                fm = fc
+                uc_id = 1
+                print(cod_interno)
+                # id_papel = papel.upper()+ ':' + str(gramaje) + 'gr.-1.2 mano'
+                id_papel = 'OFFSET BLANCO:80gr.-1.3 mano'
+                paginas_bn = paginas - bitono - color
+                print(estado, cod_interno, titulo, isbn, paginas, editorial, datovariable, id_papel,tamaño,solapas,bitono,color,paginas_bn)
+                sql = "INSERT INTO bd_libro(estado, cod_interno, titulo, isbn, paginas, editorial, datovariable, id_papel,tamaño,solapas,bitono,color,paginas_bn) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                datos = (estado, cod_cliente, titulo, isbn, no_paginas, id_cliente, dato_variable,id_papel,id_formato,solapas,paginas_bitono,paginas_color, paginas_bn)
+                cur.execute(sql, datos)
+                conn.commit()
+            except :
+                
+                print('error en el {}'.format(cod_interno))
+
+        
+
+
+        
+        contador = contador + 1
+
+    conn.close()
+
+
+

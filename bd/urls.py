@@ -7,7 +7,8 @@ from .views import ClienteView, ClienteNew, ClienteEdit, cliente_inactivar, \
                     Formato_LibroView, Formato_LibroNew, Formato_LibroEdit, formato_libro_inactivar, \
                     ModoView, ModoNew, ModoEdit, modo_inactivar, \
                     ContactoView, ContactoNew, ContactoEdit, contacto_inactivar, \
-                    LibroView, LibroNew, LibroEdit, libro_inactivar
+                    LibroView, LibroNew, LibroEdit, libro_inactivar, \
+                        libros_importacion
 
 urlpatterns = [
     # CLIENTES
@@ -57,6 +58,9 @@ urlpatterns = [
     path('libros/new', LibroNew.as_view(), name = 'libro_new'),
     path('libros/edit/<int:pk>', LibroEdit.as_view(), name = 'libro_edit'),
     path('libros/incactivar/<int:id>', libro_inactivar, name = 'libro_inactivar'),
+
+    # # IMPORTACION LIBROS
+    # path('libros/import',libros_importacion ,name = 'libro_importacion'),
 
    
 ]
