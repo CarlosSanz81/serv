@@ -1,0 +1,33 @@
+{% extends 'base/base.html' %}  
+
+ {% block page_content %}  
+  <form method="POST" enctype="multipart/form-data" >  
+   {% csrf_token %}  
+   <input type="file" name="gol">
+
+   <button type="submit">Subr</button>  
+  
+  </form>    
+  
+ {% endblock %} 
+ {% block js_page  %}  
+
+<script>
+  {% if form.errors %}
+    {% for field in form %}
+      {% if field.errors %}
+        {% for error in field.errors %}
+          mensaje('{{ error|escape }}','red');
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+
+    {% if form.non_field_errors %}
+      {% for error in form.non_field_errors %}
+        mensaje('{{ error|escape }}','red');
+      {% endfor %}
+    {% endif %}
+  {% endif %}
+</script>
+
+{% endblock js_page  %}

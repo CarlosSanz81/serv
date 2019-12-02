@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'bases',
     'bd',
     'export',
+    'import_export',
+    'pedidos',
 ]
 
 MIDDLEWARE = [
@@ -145,4 +147,6 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 
-IMPORT_EXPORT_USE_TRANSACTIONS = True  
+
+
+# IMPORT_EXPORT_USE_TRANSACTIONS = True  
