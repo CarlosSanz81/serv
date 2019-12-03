@@ -8,6 +8,7 @@ class CustomClearableFileInput(ClearableFileInput):
 class FormArchivo(forms.ModelForm):
     class Meta:
         model = Archivo
+        error_message = ''
         fields = ['arch']
         widgets = {
             'arch': ClearableFileInput

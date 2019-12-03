@@ -1,8 +1,14 @@
 {% extends 'base/base.html' %}  
 
  {% block page_content %}  
-  <form method="POST" enctype="multipart/form-data" >  
-   {% csrf_token %}  
+  
+   <small class="text-danger">
+
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+     </small>
+    <form method="POST" enctype="multipart/form-data" >  
+   {% csrf_token %} 
    <input type="file" name="gol">
 
    <button type="submit">Subr</button>  
@@ -14,6 +20,7 @@
 
 <script>
   {% if form.errors %}
+    print('ERROR : {}'.format(form.errors))
     {% for field in form %}
       {% if field.errors %}
         {% for error in field.errors %}

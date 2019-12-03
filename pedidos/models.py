@@ -22,7 +22,8 @@ class Pedido(ClaseModelo):
         verbose_name_plural = "Pedidos"
 
 class Archivo(models.Model):
-    copias = models.CharField(max_length = 100, blank = True, null = True)
+    copias = models.IntegerField(default = 0)
+    libro = models.CharField(max_length = 100, blank = True, null = True)
     pedido = models.CharField(max_length = 100, blank = True, null = True)
     arch = models.FileField(upload_to="media/", null=True, blank=True, unique= True)
 
