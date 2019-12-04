@@ -5,11 +5,35 @@ from django.http import HttpResponseRedirect
 
 from .forms import FormArchivo
 from .models import Pedido, Archivo
+from bd.models import Libro
 # from .somewhere import handle_uploaded_file
 
 
 
 # Create your views here.
+
+def grabar_pedido(arch):
+    print('Hola')
+    print(arch)
+    print(arch.pedido)
+    print(arch.libro)
+    identidad = Libro.objects.get(isbn = arch.libro)
+    print(identidad.id)
+    print(arch.copias)
+    
+    insert = Pedido(
+        estado = False,
+        id_cliente_id= 1,
+        pedido_cliente = str(arch.pedido),
+        pedido_interno = 0,
+        id_libro_id = int(identidad.id),
+        copias = int(arch.copias),
+        uc_id = 1
+        )
+    print(insert)
+    insert.save()
+
+
 def ped(arch, archivo):
     print('Arch {}'.format(arch))
     ruta = 'media/' + str(arch)
@@ -46,58 +70,35 @@ def ped(arch, archivo):
                 isbn = lineas[1]
                 isbns.append(isbn)
                 copias = lineas[2]
-                copiass.append(copias)
-    
-    
-                
+                copiass.append(copias) 
                 
     if contador == 1:
         archivo.pedido = numero_pedido
         archivo.copias = copias
         archivo.libro = isbn
         archivo.save()
-        return render(request, 'pedidos/importar.html',{'error_message': "Archivo: {} subido correctamente".format(arch),})
+       
     else:
         isb = ''
         cop = ''
-        for i in range(contador):
-            
+        for i in range(contador):          
             isb = isb + '//' + isbns[i]
             cop = cop + '//' + str(copiass[i])
-
-       
-
         archivo.pedido = numero_pedido
         archivo.copias = cop
         archivo.libro = isb
         archivo.save()
-        return render(request, 'pedidos/importar.html',{'error_message': "Archivo: {} subido correctamente".format(arch),})
-
+        
+    print('adios')
+    print(archivo.id)
     
-
-
-
-    #     lineas = linea.split('\t')
-    #     print(lineas)
-
-    #     if lineas[0] == '1':
-    #         numero_pedido = lineas[4]
-    #         print('Pedido = {}'.format(numero_pedido))
-
-
-    #     if lineas[0] == '3':
-
-    #         if lineas[1] in pedidos:
-				
-    #             valor = int(pedidos.get(lineas[1]))
-    #             suma = valor + int(lineas[2])
-    #             pedidos[lineas[1]] =  suma
-    #         else:
-    #             valor = lineas[1]
-    #             pedidos[valor] = lineas[2]
-    # print('pedidos: {}'.format(pedidos))
-    # return numero_pedido, pedidos
+    grabar_pedido(archivo)
     
+    return render(request, 'pedidos/importar.html',{'error_message': "Archivo: {} subido correctamente".format(arch),})
+
+
+
+
 def importarpedido(request):
     if request.method == 'GET':
 
@@ -117,7 +118,8 @@ def importarpedido(request):
                     insert.save()
                     print('Correcto')
                     
-                    datos = ped(arch, insert)
+                    ped(arch, insert)
+                    
                     
         except:
             return render(request, 'pedidos/importar.html',{'error_message': "Selecciona un Archivo",})      
@@ -127,11 +129,5 @@ def importarpedido(request):
 
 
 
-
-def pedido(ped):
-    insert = Pedido(id_cliente=1,
-    pedido_cliente = ped[0],
-    id_libro = 1,
-    copias = 1)
 
 

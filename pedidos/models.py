@@ -5,9 +5,9 @@ from bd.models import Cliente, Libro
 # Create your models here.
 class Pedido(ClaseModelo):
     id_cliente = models.ForeignKey(Cliente, on_delete = models.CASCADE)
-    pedido_cliente = models.CharField(max_length = 100, unique = True)
-    pedido_interno = models.CharField(max_length = 100, blank = True)
-    fecha_entrega =  models.DateTimeField( blank = True)
+    pedido_cliente = models.CharField(max_length = 100)
+    pedido_interno = models.CharField(max_length = 100, blank = True, null = True)
+    # fecha_entrega =  models.DateTimeField( blank = True, null = True)
     id_libro = models.ForeignKey(Libro, on_delete= models.CASCADE)
     copias = models.IntegerField(default = 0)
 
@@ -22,8 +22,8 @@ class Pedido(ClaseModelo):
         verbose_name_plural = "Pedidos"
 
 class Archivo(models.Model):
-    copias = models.IntegerField(default = 0)
-    libro = models.CharField(max_length = 100, blank = True, null = True)
+    copias = models.TextField( blank = True, null = True)
+    libro = models.TextField( blank = True, null = True)
     pedido = models.CharField(max_length = 100, blank = True, null = True)
     arch = models.FileField(upload_to="media/", null=True, blank=True, unique= True)
 
